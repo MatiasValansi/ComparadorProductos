@@ -1,9 +1,14 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export async function fetchMercadoLibre(query) {
-  const response = await axios.get(`/api-ml/sites/MLA/search?q=${query}&limit=20`)
-  return response.data.results
+  const targetUrl = `https://api.mercadolibre.com/sites/MLA/search?q=${encodeURIComponent(query)}&limit=20`;
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+
+  const response = await axios.get(proxyUrl);
+  const data = JSON.parse(response.data.contents);
+  return data.results;
 }
+
 
 /*
 Cuando estructure el back, probar lo siguiente antes de llamar a la API desde el Back 
