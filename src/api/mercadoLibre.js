@@ -8,8 +8,7 @@ export async function searchMercadoLibre(query) {
     params: {
       keyword: query,   
       country: 'ar',
-      page: '1',
-      sort: 'relevance'
+      page: '1'
     },
     headers: {
       'x-rapidapi-key': import.meta.env.X_RAPID_KEY_RAPID_API || '14b3c4584amshc969a09f0aaba19p1f0b6cjsnef9e38d2b7ec',
