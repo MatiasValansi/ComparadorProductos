@@ -1,13 +1,21 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export async function fetchMercadoLibre(query) {
-  const targetUrl = `https://api.mercadolibre.com/sites/MLA/search?q=${encodeURIComponent(query)}&limit=20`;
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+  try {
+    const targetUrl = `https://api.mercadolibre.com/sites/MLA/search?q=${encodeURIComponent(query)}&limit=20`
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`
 
-  const response = await axios.get(proxyUrl);
-  const data = JSON.parse(response.data.contents);
-  return data.results;
+    const response = await axios.get(proxyUrl)
+    const parsed = JSON.parse(response.data.contents)
+
+    // Devolvemos los resultados (si existen)
+    return parsed.results || []
+  } catch (error) {
+    console.error('Error al obtener datos de Mercado Libre:', error)
+    return []
+  }
 }
+
 
 
 /*
