@@ -1,7 +1,7 @@
 //Creo este componente solo para testear que funciona correcatemente la API de MercadoLibre
 
 import { useState } from 'react'
-import { fetchMercadoLibre } from '../api/fetchMercadoLibre'
+import { fetchMercadoLibre } from '../api/mercadoLibre.js'
 
 export default function TestMercadoLibre() {
   const [query, setQuery] = useState('')

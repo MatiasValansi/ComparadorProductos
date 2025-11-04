@@ -1,15 +1,37 @@
-import axios from 'axios';
+import axios from "axios";
 
-export async function fetchMercadoLibre(query) {
-  if (!query) return [];
-  const url = `https://api.mercadolibre.com/sites/MLA/search?q=${encodeURIComponent(query)}`;
-  const { data } = await axios.get(url);
-  return data.results.map(item => ({
+const ML_BASE = "https://api.mercadolibre.com";
+const SITE = import.meta.env.VITE_ML_SITE || "MLA";
+
+/**
+ * Normalized product shape:
+ * {
+ *  id: string,
+ *  title: string,
+ *  price: number,
+ *  currency: string,
+ *  image: string,
+ *  link: string,
+ *  source: 'mercadolibre'
+ * }
+ */
+
+export async function fetchMercadoLibre(query, limit = 20) {
+  if (!query) return { results: [] };
+
+  const url = `${ML_BASE}/sites/${SITE}/search`;
+  const { data } = await axios.get(url, { params: { q: query, limit } });
+
+  // data.results -> array of items (ML response)
+  const results = (data.results || []).map((item) => ({
     id: item.id,
     title: item.title,
-    price: item.price,
-    link: item.permalink,
-    thumbnail: item.thumbnail,
-    source: 'Mercado Libre'
+    price: Number(item.price ?? 0),
+    currency: item.currency_id || "ARS",
+    image: (item.thumbnail || item.pictures?.[0]?.url) || "",
+    link: item.permalink || `https://www.mercadolibre.com.ar/p/${item.id}`,
+    source: "mercadolibre",
   }));
+
+  return { original: data, results };
 }
