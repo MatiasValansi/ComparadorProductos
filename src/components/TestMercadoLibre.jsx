@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { searchMercadoLibre } from "../api/mercadoLibreApi";
+import { searchMercadoLibre } from "../api/mercadoLibre.js";
 
 export default function TestMercadoLibre() {
   const [query, setQuery] = useState("");
