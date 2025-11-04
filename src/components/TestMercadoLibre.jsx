@@ -1,62 +1,34 @@
-//Creo este componente solo para testear que funciona correcatemente la API de MercadoLibre
-
-import { useState } from 'react'
-import { fetchMercadoLibre } from '../api/mercadoLibre.js'
+import { useState } from "react";
+import { searchMercadoLibre } from "../api/mercadoLibreApi";
 
 export default function TestMercadoLibre() {
-  const [query, setQuery] = useState('')
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
 
   const handleSearch = async () => {
-    setLoading(true)
-    const data = await fetchMercadoLibre(query)
-    setResults(data)
-    setLoading(false)
-  }
+    const data = await searchMercadoLibre(query);
+    setResults(data.results || []);
+  };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Buscar en Mercado Libre</h2>
-
+    <div className="p-4">
+      <h2>Búsqueda en Mercado Libre</h2>
       <input
         type="text"
-        placeholder="Ej: notebook"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        placeholder="Buscar producto..."
       />
       <button onClick={handleSearch}>Buscar</button>
 
-      {loading && <p>Cargando...</p>}
-
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <ul>
         {results.map((item) => (
-          <li key={item.id} style={{ marginBottom: '15px' }}>
-            <img src={item.thumbnail} alt={item.title} width="50" />
-            <a href={item.link} target="_blank" rel="noopener noreferrer">
-              {item.title}
-            </a>
-            <p>💲{item.price}</p>
+          <li key={item.id}>
+            <img src={item.thumbnail} alt={item.title} width={50} />
+            {item.title} - ${item.price}
           </li>
         ))}
       </ul>
-
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-  {Array.isArray(results) && results.length > 0 ? (
-    results.map((item) => (
-      <li key={item.id} style={{ marginBottom: '15px' }}>
-        <img src={item.thumbnail} alt={item.title} width="50" />
-        <a href={item.permalink} target="_blank" rel="noopener noreferrer">
-          {item.title}
-        </a>
-        <p>💲{item.price}</p>
-      </li>
-    ))
-  ) : (
-    !loading && <p>No se encontraron resultados</p>
-  )}
-</ul>
-
     </div>
-  )
+  );
 }
