@@ -16,7 +16,32 @@ export default function TestMercadoLibre() {
   }
 
   return (
-    <ul style={{ listStyle: 'none', padding: 0 }}>
+    <div style={{ padding: '20px' }}>
+      <h2>Buscar en Mercado Libre</h2>
+
+      <input
+        type="text"
+        placeholder="Ej: notebook"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button onClick={handleSearch}>Buscar</button>
+
+      {loading && <p>Cargando...</p>}
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {results.map((item) => (
+          <li key={item.id} style={{ marginBottom: '15px' }}>
+            <img src={item.thumbnail} alt={item.title} width="50" />
+            <a href={item.link} target="_blank" rel="noopener noreferrer">
+              {item.title}
+            </a>
+            <p>💲{item.price}</p>
+          </li>
+        ))}
+      </ul>
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
   {Array.isArray(results) && results.length > 0 ? (
     results.map((item) => (
       <li key={item.id} style={{ marginBottom: '15px' }}>
@@ -31,5 +56,7 @@ export default function TestMercadoLibre() {
     !loading && <p>No se encontraron resultados</p>
   )}
 </ul>
+
+    </div>
   )
 }
