@@ -1,3 +1,13 @@
+import axios from 'axios'
+
+export async function fetchMercadoLibre(query) {
+  const response = await axios.get(`/api-ml/sites/MLA/search?q=${query}&limit=20`)
+  return response.data.results
+}
+
+/*
+Cuando estructure el back, probar lo siguiente antes de llamar a la API desde el Back 
+
 import axios from "axios";
 
 const ML_BASE = "https://api.mercadolibre.com";
@@ -15,7 +25,7 @@ const SITE = import.meta.env.VITE_ML_SITE || "MLA";
  *  source: 'mercadolibre'
  * }
  */
-
+/*
 export async function fetchMercadoLibre(query, limit = 20) {
   if (!query) return { results: [] };
 
@@ -35,3 +45,4 @@ export async function fetchMercadoLibre(query, limit = 20) {
 
   return { original: data, results };
 }
+*/
