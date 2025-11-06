@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseSettings
+from favourite_product import FavouriteProduct
 
 class Settings(BaseSettings):
     MONGO_URI: str
@@ -12,23 +13,33 @@ settings = Settings()
 
 client = AsyncIOMotorClient(settings.MONGO_URI)
 db = client[settings.DATABASE_NAME]
-favorites_collection = db["favorites"]
+favourites_collection = db["favorites"]
 
 database = client.favdatabase
-favorites_collection = database.favorites
+favourites_collection = database.favorites
 
 #Realizo los métodos de la BD
 async def get_one_fav_by_id(favorite_id):
-    fav_found = await favorites_collection.find_one({"_id": favorite_id})
+    fav_found = await favourites_collection.find_one({"_id": favorite_id})
     return fav_found
 
 async def get_all_favs():
     all_favs = []
-    cursor = favorites_collection.find({})
+    cursor = favourites_collection.find({})
     async for document in cursor:
-        all_favs.append(document)
+        all_favs.append(FavouriteProduct(document))
     return all_favs
 
 async def create_fav(fav_to_create):
-    result = await favorites_collection.insert_one(fav_to_create)
-    return str(result.inserted_id)
+    new_fav = await favourites_collection.insert_one(fav_to_create)
+    fav_created = await favourites_collection.find_one({"_id": new_fav.inserted_id})
+    return fav_created
+
+async def update_fav(favorite_id, fav_to_update):
+    await favourites_collection.update_one({"_id": favorite_id}, {"$set": fav_to_update})
+    fav_updated = await favourites_collection.find_one({"_id": favorite_id})
+    return fav_updated
+
+async def delete_fav(favorite_id):
+    fav_deleted = await favourites_collection.delete_one({"_id": favorite_id})
+    return fav_deleted
