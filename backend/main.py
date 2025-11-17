@@ -12,5 +12,5 @@ app.include_router(favourite_product_router.router, prefix="/api")
 
 @app.get("/")
 def test():
-    return {"message": "Testeando Backend!"}
+    return {"message": "Testeando Backend"}
 
