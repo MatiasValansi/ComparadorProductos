@@ -1,8 +1,18 @@
 from fastapi import FastAPI
 
-from favourite_product import FavouriteProduct
+from models.favourite_product import FavouriteProduct
+
+from database import (
+    get_one_fav_by_id,
+    get_all_favs,
+    create_fav,
+    update_fav,
+    delete_fav
+)
 
 app = FastAPI()
+
+#Delegar métodos HTTP a otra ruta con API-Router
 
 @app.get("/")
 def test():
@@ -12,7 +22,7 @@ def test():
 async def get_fav_by_id(fav_id: int):
     return {"fav_id": fav_id}
 
-@app.get("api/favourites")
+@app.get("/api/favourites")
 async def get_all_favs():
     return {"favourites": []}
 

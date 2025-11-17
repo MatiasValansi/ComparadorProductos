@@ -3,7 +3,7 @@ from typing import Optional, Literal
 from datetime import datetime
 
 class FavouriteProduct(BaseModel):
-    id: Optional[str] = Field(alias="_id")  # Para compatibilidad con MongoDB
+    id: Optional[str] = Field(default=None, alias="_id")  # Para compatibilidad con MongoDB
     title: str
     price: float
     currency: str = "ARS"
@@ -16,6 +16,7 @@ class FavouriteProduct(BaseModel):
     user_id: Optional[str] = None  # para asociar favoritos a un usuario específico
 
     class Config:
+        allow_population_by_field_name = True  # 🔹 Permite usar 'id' o '_id'
         json_schema_extra = {
             "example": {
                 "title": "Notebook HP Pavilion 15",
