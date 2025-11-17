@@ -16,16 +16,19 @@ class FavouriteProduct(BaseModel):
     user_id: Optional[str] = None  # para asociar favoritos a un usuario específico
     
     def __eq__(self, other):
-        if not isinstance(other, FavouriteProduct):
-            return False
-        return (
-            self.title == other.title and
-            self.price == other.price and
-            self.currency == other.currency and
-            self.product_url == other.product_url and
-            self.source == other.source and
-            self.user_id == other.user_id
-        )
+        
+        is_equal = False
+
+        if isinstance(other, FavouriteProduct) and (self.title == other.title and
+                self.price == other.price and
+                self.currency == other.currency and
+                self.product_url == other.product_url and
+                self.source == other.source and
+                self.user_id == other.user_id):
+                        
+                is_equal = True       
+        
+        return is_equal 
 
     def __ne__(self, other):
         return not self.__eq__(other)
