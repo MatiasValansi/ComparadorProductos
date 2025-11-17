@@ -14,6 +14,21 @@ class FavouriteProduct(BaseModel):
     last_checked: Optional[datetime] = None
     lowest_price_recorded: Optional[float] = None  # para comparar futuras bajas
     user_id: Optional[str] = None  # para asociar favoritos a un usuario específico
+    
+    def __eq__(self, other):
+        if not isinstance(other, FavouriteProduct):
+            return False
+        return (
+            self.title == other.title and
+            self.price == other.price and
+            self.currency == other.currency and
+            self.product_url == other.product_url and
+            self.source == other.source and
+            self.user_id == other.user_id
+        )
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     class Config:
         allow_population_by_field_name = True  # 🔹 Permite usar 'id' o '_id'
