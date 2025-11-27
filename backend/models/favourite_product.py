@@ -3,7 +3,7 @@ from typing import Optional, Literal
 from datetime import datetime
 
 class FavouriteProduct(BaseModel):
-    id: Optional[str] = Field(default=None, alias="_id")  # Para compatibilidad con MongoDB
+    id: Optional[str] = Field(default=None,alias="_id")  # Para compatibilidad con MongoDB
     title: str
     price: float
     currency: str = "ARS"
@@ -34,14 +34,15 @@ class FavouriteProduct(BaseModel):
         return not self.__eq__(other)
 
     class Config:
-        allow_population_by_field_name = True  # 🔹 Permite usar 'id' o '_id'
+        allow_population_by_field_name = True  # 🔹 Permite usar 'id' o '_id'        
+        arbitrary_types_allowed = True
         json_schema_extra = {
             "example": {
                 "title": "Notebook HP Pavilion 15",
                 "price": 699999.99,
                 "currency": "ARS",
-                "product_url": "https://www.mercadolibre.com.ar/p/MLA1234567",
-                "image_url": "https://example.com/notebook.jpg",
+                "product_url": "https://www.mercadolibre.com.ar/p/MLA123456789",
+                "image_url": "https://example.com/celular.jpg",
                 "source": "mercadolibre",
                 "user_id": "user_12345"
             }
