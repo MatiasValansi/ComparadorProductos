@@ -21,29 +21,32 @@ class FavoriteProductRepository:
             return None
 
     async def get_all_favs(self) -> list[FavouriteProduct]:
-        favourites: list[FavouriteProduct] = []
+        all_favourites: list[FavouriteProduct] = []
         cursor = favourites_collection.find({})
         async for document in cursor:
-            favourites.append(FavouriteProduct(**self._deserialize_document(document)))
-        return favourites
+            all_favourites.append(FavouriteProduct(**self._deserialize_document(document)))
+        return all_favourites
 
     async def create_fav(self, fav: FavouriteProduct) -> FavouriteProduct:
-        document = self._serialize_fav(fav)
+        fav_to_create = self._serialize_fav(fav)
 
         # Dejamos que Mongo genere el ObjectId
-        document.pop("_id", None)
+        fav_to_create.pop("_id", None)
 
-        result = await favourites_collection.insert_one(document)
-        created = await favourites_collection.find_one({"_id": result.inserted_id})
-        return FavouriteProduct(**self._deserialize_document(created))
+        fav_exists = await favourites_collection.insert_one(fav_to_create)
+        fav_created = await favourites_collection.find_one({"_id": fav_exists.inserted_id})
+        return FavouriteProduct(**self._deserialize_document(fav_created))
 
     async def update_fav(self, favourite_id: str, fav_to_update: FavouriteProduct) -> FavouriteProduct | None:
-        oid = ObjectId(favourite_id)
+        id_fav_to_update = ObjectId(favourite_id)
+        update_doc = self._serialize_fav(fav_to_update)
+        update_doc.pop("_id", None)  # no intentamos modificar el _id
+
         await favourites_collection.update_one(
-            {"_id": oid},
-            {"$set": self._serialize_fav(fav_to_update)},
+            {"_id": id_fav_to_update},
+            {"$set": update_doc},
         )
-        updated = await favourites_collection.find_one({"_id": oid})
+        updated = await favourites_collection.find_one({"_id": id_fav_to_update})
         return FavouriteProduct(**self._deserialize_document(updated)) if updated else None
 
     async def delete_fav(self, favourite_id: str) -> bool:
@@ -61,7 +64,9 @@ class FavoriteProductRepository:
         return document is not None
 
     def _serialize_fav(self, fav: FavouriteProduct) -> dict:
-        """Convierte un FavouriteProduct a dict listo para MongoDB."""
+        """Convierte un FavouriteProduct a dict listo para MongoDB.
+           Lo inverso a _deserialize_document, se encarga de convertir str a ObjectId cuando es necesario.
+        """
 
         data = fav.model_dump(by_alias=True)
 
@@ -79,7 +84,9 @@ class FavoriteProductRepository:
         return data
 
     def _deserialize_document(self, document: dict) -> dict:
-        """Normaliza un documento de MongoDB para el modelo Pydantic."""
+        """Normaliza un documento de MongoDB para el modelo Pydantic.
+            - Convierte ObjectId a str --> De esta manera se soluciona el problema de serialización JSON de FastAPI que lazanaba error 500
+        """
 
         if not document:
             return {}
