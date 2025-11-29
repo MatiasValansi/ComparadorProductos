@@ -2,9 +2,9 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException
 
-from models.favourite_product import FavouriteProduct
-from repository.favourite_product_repository import FavoriteProductRepository
-from service.favourite_product_service import FavProductService
+from backend.models.favourite_product import FavouriteProduct
+from backend.repository.favourite_product_repository import FavoriteProductRepository
+from backend.service.favourite_product_service import FavProductService
 
 
 router = APIRouter(prefix="/favourites", tags=["Favourite Products"])
@@ -62,3 +62,7 @@ async def delete_fav(favourite_id: str):
         if "not found" in message:
             raise HTTPException(status_code=404, detail=message)
         raise HTTPException(status_code=400, detail=message)
+
+
+class Config:
+    env_file = "backend/.env"

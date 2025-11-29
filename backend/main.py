@@ -1,12 +1,11 @@
 from fastapi import FastAPI
-
-from models.favourite_product import FavouriteProduct
-
-from router import favourite_product_router
+from .router import favourite_product_router, product_router
 
 app = FastAPI()
 
 app.include_router(favourite_product_router.router, prefix="/api")
+app.include_router(product_router.router, prefix="/api")
+
 
 #Delegar métodos HTTP a otra ruta con API-Router
 

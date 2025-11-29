@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     CLUSTER_PASS: str
 
     class Config:
-        env_file = ".env"
+        env_file = "backend/.env"
 
 settings = Settings()
 

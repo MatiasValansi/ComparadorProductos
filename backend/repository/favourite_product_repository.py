@@ -1,8 +1,8 @@
 from bson import ObjectId
 from pydantic import HttpUrl
 
-from config.database import favourites_collection
-from models.favourite_product import FavouriteProduct
+from backend.config.database import favourites_collection
+from backend.models.favourite_product import FavouriteProduct
 
 
 class FavoriteProductRepository:

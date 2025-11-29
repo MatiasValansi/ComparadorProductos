@@ -1,7 +1,7 @@
 from typing import List
 
-from repository.favourite_product_repository import FavoriteProductRepository
-from models.favourite_product import FavouriteProduct
+from backend.repository.favourite_product_repository import FavoriteProductRepository
+from backend.models.favourite_product import FavouriteProduct
 
 
 class FavProductService:
