@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+
 from .router import favourite_product_router, product_router
+
 
 app = FastAPI()
 

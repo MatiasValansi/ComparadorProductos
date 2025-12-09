@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from bson import ObjectId
 from pydantic import HttpUrl
 
@@ -13,15 +15,15 @@ class FavoriteProductRepository:
     - Se encarga de convertir `ObjectId` <-> `str` y URLs.
     """
 
-    async def get_one_fav_by_id(self, favourite_id: str) -> FavouriteProduct | None:
+    async def get_one_fav_by_id(self, favourite_id: str) -> Optional[FavouriteProduct]:
         try:
             document = await favourites_collection.find_one({"_id": ObjectId(favourite_id)})
             return FavouriteProduct(**self._deserialize_document(document)) if document else None
         except Exception:
             return None
 
-    async def get_all_favs(self) -> list[FavouriteProduct]:
-        all_favourites: list[FavouriteProduct] = []
+    async def get_all_favs(self) -> List[FavouriteProduct]:
+        all_favourites: List[FavouriteProduct] = []
         cursor = favourites_collection.find({})
         async for document in cursor:
             all_favourites.append(FavouriteProduct(**self._deserialize_document(document)))
@@ -37,7 +39,7 @@ class FavoriteProductRepository:
         fav_created = await favourites_collection.find_one({"_id": fav_exists.inserted_id})
         return FavouriteProduct(**self._deserialize_document(fav_created))
 
-    async def update_fav(self, favourite_id: str, fav_to_update: FavouriteProduct) -> FavouriteProduct | None:
+    async def update_fav(self, favourite_id: str, fav_to_update: FavouriteProduct) -> Optional[FavouriteProduct]:
         id_fav_to_update = ObjectId(favourite_id)
         update_doc = self._serialize_fav(fav_to_update)
         update_doc.pop("_id", None)  # no intentamos modificar el _id
