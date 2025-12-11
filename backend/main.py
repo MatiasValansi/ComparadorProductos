@@ -1,7 +1,11 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
 
 from .router import favourite_product_router, product_router
 
+
+# Cargar variables de entorno desde el archivo .env en el proyecto
+load_dotenv()
 
 app = FastAPI()
 
